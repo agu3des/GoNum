@@ -15,7 +15,7 @@
 
 ## Usage
 
-> A mini-project developed as part of the leveling course in the Distributed Programming discipline, using the Go language, taught by Professor Ruan Delgado Gomes, at the Federal Institute of Education, Science and Technology of Paraíba (IFPB). [description](Miniprojeto_Go.pdf)
+> A mini-project developed as part of the leveling course in the Distributed Programming discipline, using the Go language, taught by Professor Ruan Delgado Gomes, at the Federal Institute of Education, Science and Technology of Paraíba (IFPB). [Miniprojeto_Go](Miniprojeto_Go.pdf)
 
 ## Project Requirements
 
@@ -39,19 +39,19 @@
       * The program must be implemented in a single `main.go` file.
       * Error handling must follow the standard Go pattern (`if err != nil`).
 
+4. **Bonus Features**
+   * Prevent adding negative numbers.
+   * Implement ascending and descending list sorting.
+   * An option to display only even numbers.
+   * Export the list to a text file.
+
 ## File Description
 
-| Name | Description |
-| :--- | :--- |
-| `main.go` | The main file that contains all the logic for the number manager, including the options menu and data manipulation functions. |
-
-### Bonus Features
-
-  * Prevent adding negative numbers.
-  * Implement ascending and descending list sorting.
-  * An option to display only even numbers.
-  * Export the list to a text file.
+| Name          | Description                                                                                                                   |
+|:--------------|:------------------------------------------------------------------------------------------------------------------------------|
+| `main.go`     | The main file that contains all the logic for the number manager, including the options menu and data manipulation functions. |
+| `numbers.txt` | Txt made of the function exportToFile.                                                                                        |
 
 ### Dev
 
-  * Ananda Guedes
+  * Ananda Guedes do Ó | [email](anandaguedesdoo@gmail.com) | [linkedin](https://www.linkedin.com/in/ananda-guedes/) | [lattes](http://lattes.cnpq.br/5045459158459891) | [github](https://github.com/agu3des)
