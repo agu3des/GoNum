@@ -10,60 +10,62 @@ import (
 	"strings"
 )
 
-// numbers é a lista global de números gerenciada pela aplicação.
-var numbers = []int{15, 80, 46, 35, 71, 13, 22, 98}
-
 // addNum solicita um número ao usuário e o adiciona à lista.
 // Retorna um erro se a entrada for inválida ou o número for negativo.
-func addNum(reader *bufio.Reader) error {
+func addNum(nums []int, reader *bufio.Reader) error {
 	fmt.Print("Digite um número: ")
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)
 	num, err := strconv.Atoi(input)
+
 	if err != nil {
 		return errors.New("Entrada inválida. Por favor, digite um número inteiro.")
 	}
 	if num < 0 {
 		return fmt.Errorf("O número %d é negativo. Não foi adicionado.", num)
 	}
-	numbers = append(numbers, num)
-	fmt.Println("Adicionado:", numbers)
+
+	nums = append(nums, num)
+	fmt.Println("Adicionado:", nums)
 	return nil
 }
 
 // listNum exibe todos os números na lista.
-func listNum() {
-	fmt.Printf("Lista: %v\n", numbers)
+func listNum(nums []int) {
+	fmt.Printf("Lista: %v\n", nums)
 }
 
 // removeByInd solicita um índice e remove o número correspondente da lista.
 // Retorna um erro se a entrada for inválida ou o índice estiver fora do alcance.
-func removeByInd(reader *bufio.Reader) error {
+func removeByInd(nums []int, reader *bufio.Reader) error {
 	fmt.Print("Digite um índice: ")
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)
 	index, err := strconv.Atoi(input)
+
 	if err != nil {
 		return errors.New("Entrada inválida. Por favor, digite um número inteiro.")
 	}
-	if index < 0 || index >= len(numbers) {
+
+	if index < 0 || index >= len(nums) {
 		return errors.New("O índice está fora do alcance.")
 	}
-	numbers = append(numbers[:index], numbers[index+1:]...)
-	fmt.Println("Removido:", numbers)
+
+	nums = append(nums[:index], nums[index+1:]...)
+	fmt.Println("Removido:", nums)
 	return nil
 }
 
 // statistics calcula a média, mínimo e máximo da lista.
 // Retorna um erro se a lista estiver vazia.
-func statistics() (float64, int, int, error) {
-	if len(numbers) == 0 {
+func statistics(nums []int) (float64, int, int, error) {
+	if len(nums) == 0 {
 		return 0, 0, 0, errors.New("não há números para calcular estatísticas")
 	}
 	sum := 0
-	minNum := numbers[0]
-	maxNum := numbers[0]
-	for _, num := range numbers {
+	minNum := nums[0]
+	maxNum := nums[0]
+	for _, num := range nums {
 		sum += num
 		if num < minNum {
 			minNum = num
@@ -72,7 +74,7 @@ func statistics() (float64, int, int, error) {
 			maxNum = num
 		}
 	}
-	average := float64(sum) / float64(len(numbers))
+	average := float64(sum) / float64(len(nums))
 	return average, minNum, maxNum, nil
 }
 
@@ -83,6 +85,7 @@ func safeDivision(reader *bufio.Reader) error {
 	inputDividend, _ := reader.ReadString('\n')
 	inputDividend = strings.TrimSpace(inputDividend)
 	dividend, err := strconv.ParseFloat(inputDividend, 64)
+
 	if err != nil {
 		return errors.New("Entrada inválida para o dividendo.")
 	}
@@ -91,6 +94,7 @@ func safeDivision(reader *bufio.Reader) error {
 	inputDivisor, _ := reader.ReadString('\n')
 	inputDivisor = strings.TrimSpace(inputDivisor)
 	divisor, err := strconv.ParseFloat(inputDivisor, 64)
+
 	if err != nil {
 		return errors.New("Entrada inválida para o divisor.")
 	}
@@ -103,30 +107,30 @@ func safeDivision(reader *bufio.Reader) error {
 }
 
 // clearList esvazia a lista de números.
-func clearList() {
-	numbers = []int{}
+func clearList(nums []int) {
+	nums = []int{}
 	fmt.Println("Lista limpa.")
 }
 
 // sortList ordena a lista em ordem crescente e decrescente.
-func sortList() error {
-	if len(numbers) == 0 {
+func sortList(nums []int) error {
+	if len(nums) == 0 {
 		return errors.New("Nenhum número na lista para ordenar")
 	}
-	sort.Ints(numbers)
-	fmt.Printf("Ordem crescente: %v\n", numbers)
-	sort.Sort(sort.Reverse(sort.IntSlice(numbers)))
-	fmt.Printf("Ordem decrescente: %v\n", numbers)
+	sort.Ints(nums)
+	fmt.Printf("Ordem crescente: %v\n", nums)
+	sort.Sort(sort.Reverse(sort.IntSlice(nums)))
+	fmt.Printf("Ordem decrescente: %v\n", nums)
 	return nil
 }
 
 // evenNum exibe apenas os números pares da lista.
-func evenNum() error {
-	if len(numbers) == 0 {
+func evenNum(nums []int) error {
+	if len(nums) == 0 {
 		return errors.New("A lista está vazia, não há números pares")
 	}
 	var evenNumbers []int
-	for _, num := range numbers {
+	for _, num := range nums {
 		if num%2 == 0 {
 			evenNumbers = append(evenNumbers, num)
 		}
@@ -139,8 +143,8 @@ func evenNum() error {
 }
 
 // exportToFile exporta a lista para um arquivo de texto.
-func exportToFile() error {
-	if len(numbers) == 0 {
+func exportToFile(nums []int) error {
+	if len(nums) == 0 {
 		return errors.New("A lista está vazia, não há o que exportar")
 	}
 
@@ -151,7 +155,7 @@ func exportToFile() error {
 	defer file.Close()
 
 	writer := bufio.NewWriter(file)
-	for _, num := range numbers {
+	for _, num := range nums {
 		_, err := writer.WriteString(fmt.Sprintf("%d\n", num))
 		if err != nil {
 			return fmt.Errorf("Erro ao escrever no arquivo: %w", err)
@@ -165,6 +169,7 @@ func exportToFile() error {
 
 // main é a função principal que gerencia o menu e a interação do usuário.
 func main() {
+	var numbers = []int{15, 80, 46, 35, 71, 13, 22, 98}
 	reader := bufio.NewReader(os.Stdin)
 	for {
 		fmt.Println("\n--- Menu ---")
@@ -185,17 +190,17 @@ func main() {
 
 		switch escolha {
 		case "1":
-			if err := addNum(reader); err != nil {
+			if err := addNum(numbers, reader); err != nil {
 				fmt.Println("Erro:", err)
 			}
 		case "2":
-			listNum()
+			listNum(numbers)
 		case "3":
-			if err := removeByInd(reader); err != nil {
+			if err := removeByInd(numbers, reader); err != nil {
 				fmt.Println("Erro:", err)
 			}
 		case "4":
-			average, min, max, err := statistics()
+			average, min, max, err := statistics(numbers)
 			if err != nil {
 				fmt.Println("Erro:", err)
 			} else {
@@ -206,17 +211,17 @@ func main() {
 				fmt.Println("Erro:", err)
 			}
 		case "6":
-			clearList()
+			clearList(numbers)
 		case "7":
-			if err := sortList(); err != nil {
+			if err := sortList(numbers); err != nil {
 				fmt.Println("Erro:", err)
 			}
 		case "8":
-			if err := evenNum(); err != nil {
+			if err := evenNum(numbers); err != nil {
 				fmt.Println("Erro:", err)
 			}
 		case "9":
-			if err := exportToFile(); err != nil {
+			if err := exportToFile(numbers); err != nil {
 				fmt.Println("Erro:", err)
 			} else {
 				fmt.Println("Lista exportada para 'numbers.txt' com sucesso.")
