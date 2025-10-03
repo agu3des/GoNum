@@ -11,23 +11,23 @@ import (
 )
 
 // addNum solicita um número ao usuário e o adiciona à lista.
-// Retorna um erro se a entrada for inválida ou o número for negativo.
-func addNum(nums []int, reader *bufio.Reader) error {
+// Retorna a lista atualizada e um erro, se houver.
+func addNum(nums []int, reader *bufio.Reader) ([]int, error) {
 	fmt.Print("Digite um número: ")
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)
 	num, err := strconv.Atoi(input)
 
 	if err != nil {
-		return errors.New("Entrada inválida. Por favor, digite um número inteiro.")
+		return nums, errors.New("Entrada inválida. Por favor, digite um número inteiro.")
 	}
 	if num < 0 {
-		return fmt.Errorf("O número %d é negativo. Não foi adicionado.", num)
+		return nums, fmt.Errorf("O número %d é negativo. Não foi adicionado.", num)
 	}
 
-	nums = append(nums, num)
-	fmt.Println("Adicionado:", nums)
-	return nil
+	newNums := append(nums, num)
+	fmt.Println("Adicionado:", newNums)
+	return newNums, nil
 }
 
 // listNum exibe todos os números na lista.
@@ -36,24 +36,24 @@ func listNum(nums []int) {
 }
 
 // removeByInd solicita um índice e remove o número correspondente da lista.
-// Retorna um erro se a entrada for inválida ou o índice estiver fora do alcance.
-func removeByInd(nums []int, reader *bufio.Reader) error {
+// Retorna a lista atualizada e um erro, se houver.
+func removeByInd(nums []int, reader *bufio.Reader) ([]int, error) {
 	fmt.Print("Digite um índice: ")
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)
 	index, err := strconv.Atoi(input)
 
 	if err != nil {
-		return errors.New("Entrada inválida. Por favor, digite um número inteiro.")
+		return nums, errors.New("Entrada inválida. Por favor, digite um número inteiro.")
 	}
 
 	if index < 0 || index >= len(nums) {
-		return errors.New("O índice está fora do alcance.")
+		return nums, errors.New("O índice está fora do alcance.")
 	}
 
-	nums = append(nums[:index], nums[index+1:]...)
-	fmt.Println("Removido:", nums)
-	return nil
+	newNums := append(nums[:index], nums[index+1:]...)
+	fmt.Println("Removido:", newNums)
+	return newNums, nil
 }
 
 // statistics calcula a média, mínimo e máximo da lista.
@@ -107,9 +107,10 @@ func safeDivision(reader *bufio.Reader) error {
 }
 
 // clearList esvazia a lista de números.
-func clearList(nums []int) {
-	nums = []int{}
+// Retorna a lista esvaziada.
+func clearList(nums []int) []int {
 	fmt.Println("Lista limpa.")
+	return []int{}
 }
 
 // sortList ordena a lista em ordem crescente e decrescente.
@@ -117,10 +118,12 @@ func sortList(nums []int) error {
 	if len(nums) == 0 {
 		return errors.New("Nenhum número na lista para ordenar")
 	}
-	sort.Ints(nums)
-	fmt.Printf("Ordem crescente: %v\n", nums)
-	sort.Sort(sort.Reverse(sort.IntSlice(nums)))
-	fmt.Printf("Ordem decrescente: %v\n", nums)
+	tempNums := make([]int, len(nums))
+	copy(tempNums, nums)
+	sort.Ints(tempNums)
+	fmt.Printf("Ordem crescente: %v\n", tempNums)
+	sort.Sort(sort.Reverse(sort.IntSlice(tempNums)))
+	fmt.Printf("Ordem decrescente: %v\n", tempNums)
 	return nil
 }
 
@@ -167,7 +170,6 @@ func exportToFile(nums []int) error {
 	return nil
 }
 
-// main é a função principal que gerencia o menu e a interação do usuário.
 func main() {
 	var numbers = []int{15, 80, 46, 35, 71, 13, 22, 98}
 	reader := bufio.NewReader(os.Stdin)
@@ -190,13 +192,17 @@ func main() {
 
 		switch escolha {
 		case "1":
-			if err := addNum(numbers, reader); err != nil {
+			var err error
+			numbers, err = addNum(numbers, reader)
+			if err != nil {
 				fmt.Println("Erro:", err)
 			}
 		case "2":
 			listNum(numbers)
 		case "3":
-			if err := removeByInd(numbers, reader); err != nil {
+			var err error
+			numbers, err = removeByInd(numbers, reader)
+			if err != nil {
 				fmt.Println("Erro:", err)
 			}
 		case "4":
@@ -211,7 +217,7 @@ func main() {
 				fmt.Println("Erro:", err)
 			}
 		case "6":
-			clearList(numbers)
+			numbers = clearList(numbers)
 		case "7":
 			if err := sortList(numbers); err != nil {
 				fmt.Println("Erro:", err)
